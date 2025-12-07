@@ -13,4 +13,5 @@ echo "Active background jobs:"
 jobs
 echo "Waiting for completion......"
 wait
+# kill
 echo "All data fetched successfully!"
