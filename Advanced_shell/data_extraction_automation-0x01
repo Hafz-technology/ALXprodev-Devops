@@ -3,11 +3,10 @@ if [ ! -f "data.json" ]; then
 	echo "Error: data.json not found. Please run task 0x00 first."
 	exit 1
 fi
-jq -r '"\(.name) \(.types[0].type.name) \(.weight) \(.height)"' data.json | \
-awk '{
-	name = toupper(substr($1,1,1)) substr($1,2);
-	type = toupper(substr($2,1,1)) substr($2,2);
-	weight = $3 / 10;
-	height = $4 / 10;
-	printf "%s is of type %s, weighs %gkg, and is %gm tall.\n", name, type, weight, height
-}'
+name=$(jq -r '.name' data.json | sed 's/^./\u&/')
+type=$(jq -r '.types[0].type.name' data.json | sed 's/^./\u&/')
+raw_weight=$(jq -r '.weight' data.json)
+formatted_weight=$(echo "$raw_weight" | awk '{print $1 / 10}')
+raw_height=$(jq -r '.height' data.json)
+formatted_height=$(echo "$raw_height" | awk '{print $1 / 10}')
+echo "$name is of type $type, weighs ${formatted_weight}kg, and is ${formatted_height}m tall."
