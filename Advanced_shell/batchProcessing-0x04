@@ -3,16 +3,14 @@ mkdir -p pokemon_data
 pokemon_list="bulbasaur ivysaur venusaur charmander charmeleon"
 echo "Starting parallel data fetching....."
 for pokemon in $pokemon_list; do
-	(
-		if curl -s -f "https://pokeapi.co/api/v2/pokemon/$pokemon" -o "pokemon_data/$pokemon.json"; then
-			echo "Fetched $pokemon"
-		else
-			echo "Failed to fetch $pokemon"
-		fi
-	) &
+	curl -s -f "https://pokeapi.co/api/v2/pokemon/$pokemon" -o "pokemon_data/$pokemon.json" &
+
 	pid=$!
 	echo "Started fetch for $pokemon (PID: $pid)"
 done
-echo "Waiting for all background processes to finish......"
+echo "All requests launched."
+echo "Active background jobs:"
+jobs
+echo "Waiting for completion......"
 wait
 echo "All data fetched successfully!"
